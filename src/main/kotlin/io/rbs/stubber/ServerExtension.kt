@@ -7,4 +7,5 @@ open class ServerExtension {
 
 open class LambdaConfiguration {
     var handlerPattern: String = "/"
+    val handlerMethodName: String = "handleRequest"
 }
