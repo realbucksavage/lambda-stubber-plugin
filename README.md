@@ -37,9 +37,16 @@ stubber {
 
 ## Usage
 
+### Start the server
+
 ```bash
 ./gradlew startStubServer
 ```
 
 - The server will start in blocking mode, similar to `gradle run`.
 - Press `Ctrl+C` to stop the server.
+
+### Sending requests
+
+- Request to `http://127.0.0.1:9795` will go to `LambdaHandler1`
+- Requests to `http://127.0.0.1:9795/handler-2` will go to `LambdaHandler2`

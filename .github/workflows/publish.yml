@@ -1,0 +1,52 @@
+name: Publish Gradle Plugin
+
+on:
+  push:
+    branches:
+      - main        # snapshot builds
+    tags:
+      - 'v*'        # release builds
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # 2. Setup JDK
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+          server-id: ossrh  # Gradle publishing
+
+      # 3. Import GPG key for signing
+      - name: Import GPG key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+
+      # 4. Configure Gradle credentials
+      - name: Configure Gradle properties
+        run: |
+          echo "ossrhUsername=${{ secrets.OSSRH_USERNAME }}" >> ~/.gradle/gradle.properties
+          echo "ossrhPassword=${{ secrets.OSSRH_PASSWORD }}" >> ~/.gradle/gradle.properties
+          echo "signing.gnupg.keyName=${{ secrets.GPG_KEY_ID }}" >> ~/.gradle/gradle.properties
+          echo "signing.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }}" >> ~/.gradle/gradle.properties
+
+      # 5. Set version for snapshot builds
+      - name: Configure Snapshot Version
+        if: github.ref == 'refs/heads/main'
+        run: |
+          ./gradlew -Pversion=$(date +%Y.%m.%d.%H%M%S)-SNAPSHOT printVersion
+
+      # 6. Build & publish
+      - name: Publish to OSSRH
+        run: ./gradlew clean publish --no-daemon --stacktrace
