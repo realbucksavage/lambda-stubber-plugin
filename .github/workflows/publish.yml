@@ -46,8 +46,11 @@ jobs:
       - name: Configure Snapshot Version
         if: github.ref == 'refs/heads/main'
         run: |
+          chmod +x ./gradlew
           ./gradlew -Pversion=$(date +%Y.%m.%d.%H%M%S)-SNAPSHOT printVersion
 
       # 6. Build & publish
       - name: Publish to OSSRH
-        run: ./gradlew clean publish --no-daemon --stacktrace
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean publish --no-daemon --stacktrace
