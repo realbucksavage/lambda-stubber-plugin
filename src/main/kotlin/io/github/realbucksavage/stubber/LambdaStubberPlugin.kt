@@ -1,6 +1,6 @@
-package io.rbs.stubber
+package io.github.realbucksavage.stubber
 
-import io.rbs.stubber.server.startStubServer
+import io.github.realbucksavage.stubber.server.startStubServer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSetContainer

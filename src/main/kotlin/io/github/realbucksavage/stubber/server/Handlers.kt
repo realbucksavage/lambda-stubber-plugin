@@ -1,8 +1,8 @@
-package io.rbs.stubber.server
+package io.github.realbucksavage.stubber.server
 
 import com.sun.net.httpserver.HttpExchange
-import io.rbs.stubber.server.handlers.APIGatewayProxyResponseHandler
-import io.rbs.stubber.server.handlers.API_GATEWAY_PROXY_RESPONSE
+import io.github.realbucksavage.stubber.server.handlers.APIGatewayProxyResponseHandler
+import io.github.realbucksavage.stubber.server.handlers.API_GATEWAY_PROXY_RESPONSE
 
 interface ResponseHandler {
     fun handleResponse(responseObject: Any, exchange: HttpExchange)

@@ -1,9 +1,9 @@
-package io.rbs.stubber.server.handlers
+package io.github.realbucksavage.stubber.server.handlers
 
 import com.sun.net.httpserver.HttpExchange
-import io.rbs.stubber.server.RequestMapper
-import io.rbs.stubber.server.ResponseHandler
-import io.rbs.stubber.server.invokeGetter
+import io.github.realbucksavage.stubber.server.RequestMapper
+import io.github.realbucksavage.stubber.server.ResponseHandler
+import io.github.realbucksavage.stubber.server.invokeGetter
 import java.nio.charset.StandardCharsets
 
 const val API_GATEWAY_PROXY_REQUEST = "com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent"

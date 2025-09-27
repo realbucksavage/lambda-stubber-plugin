@@ -1,4 +1,4 @@
-package io.rbs.stubber
+package io.github.realbucksavage.stubber
 
 open class ServerExtension {
     val host: String = "127.0.0.1"

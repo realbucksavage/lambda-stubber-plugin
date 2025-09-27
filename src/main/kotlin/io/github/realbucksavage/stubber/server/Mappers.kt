@@ -1,8 +1,8 @@
-package io.rbs.stubber.server
+package io.github.realbucksavage.stubber.server
 
 import com.sun.net.httpserver.HttpExchange
-import io.rbs.stubber.server.handlers.APIGatewayProxyRequestMapper
-import io.rbs.stubber.server.handlers.API_GATEWAY_PROXY_REQUEST
+import io.github.realbucksavage.stubber.server.handlers.APIGatewayProxyRequestMapper
+import io.github.realbucksavage.stubber.server.handlers.API_GATEWAY_PROXY_REQUEST
 
 interface RequestMapper {
     fun mapRequest(exchange: HttpExchange): Map<String, Any>

@@ -1,9 +1,9 @@
-package io.rbs.stubber.server
+package io.github.realbucksavage.stubber.server
 
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
-import io.rbs.stubber.LambdaConfiguration
-import io.rbs.stubber.ServerExtension
+import io.github.realbucksavage.stubber.LambdaConfiguration
+import io.github.realbucksavage.stubber.ServerExtension
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import java.io.IOException

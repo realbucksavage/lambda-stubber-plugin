@@ -5,7 +5,7 @@ plugins {
     id("signing")
 }
 
-group = "io.rbs"
+group = "io.github.realbucksavage"
 version = "0.1.0"
 
 repositories {
@@ -33,8 +33,8 @@ java {
 gradlePlugin {
     plugins {
         create("lambdaStubberPlugin") {
-            id = "io.rbs.lambda-stubber"
-            implementationClass = "io.rbs.stubber.LambdaStubberPlugin"
+            id = "io.github.realbucksavage.lambda-stubber"
+            implementationClass = "io.github.realbucksavage.stubber.LambdaStubberPlugin"
             displayName = "Lambda Stubber Plugin"
             description = "Runs a local stub server for AWS Lambda development and testing"
         }
