@@ -3,12 +3,12 @@ package io.rbs.stubber.server
 import com.sun.net.httpserver.HttpServer
 import io.rbs.stubber.LambdaStubberPlugin
 import io.rbs.stubber.ServerExtension
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import org.gradle.api.logging.Logger
+import org.gradle.api.logging.Logging
 import java.lang.reflect.ParameterizedType
 import java.net.InetSocketAddress
 
-private val LOGGER: Logger = LoggerFactory.getLogger("StubberServer")
+private val LOGGER: Logger = Logging.getLogger("StubberServer")
 
 private const val REQUEST_HANDLER_INTERFACE = "com.amazonaws.services.lambda.runtime.RequestHandler"
 private const val CONTEXT_INTERFACE = "com.amazonaws.services.lambda.runtime.Context"

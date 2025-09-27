@@ -4,16 +4,16 @@ import com.sun.net.httpserver.HttpServer
 import io.rbs.stubber.server.createServer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.logging.Logger
+import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.SourceSetContainer
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.net.URLClassLoader
 import java.util.concurrent.CountDownLatch
 
 class LambdaStubberPlugin : Plugin<Project> {
 
     companion object {
-        private val LOGGER: Logger = LoggerFactory.getLogger(LambdaStubberPlugin::class.java)
+        private val LOGGER: Logger = Logging.getLogger(LambdaStubberPlugin::class.java)
 
         private var server: HttpServer? = null
         private val stopLatch = CountDownLatch(1)
@@ -29,6 +29,7 @@ class LambdaStubberPlugin : Plugin<Project> {
 
         project.tasks.register("startStubServer") {
             dependsOn("classes")
+            finalizedBy("stopStubServer")
 
             group = TASK_GROUP
             description = "Starts the stub server."
@@ -43,13 +44,21 @@ class LambdaStubberPlugin : Plugin<Project> {
                 implementorClassLoader = URLClassLoader(urls, javaClass.classLoader)
 
                 if (server != null) {
-                    LOGGER.info("Server is already running...")
+                    LOGGER.warn("Server is already running...")
                     return@doLast
                 }
 
                 server = createServer(serverExtension).apply {
                     start()
-                    LOGGER.info("Server started on http://localhost:${serverExtension.port}")
+                    LOGGER.lifecycle("Server started on http://localhost:${serverExtension.port}")
+
+                    Runtime.getRuntime().addShutdownHook(object : Thread() {
+                        override fun run() {
+                            LOGGER.lifecycle("[Lifecycle] Closing the stub server.")
+                            server?.stop(0)
+                            stopLatch.countDown()
+                        }
+                    })
 
                     stopLatch.await()
                 }
@@ -62,14 +71,14 @@ class LambdaStubberPlugin : Plugin<Project> {
 
             doLast {
                 if (server == null) {
-                    LOGGER.info("Server is not running.")
+                    LOGGER.warn("Server is not running.")
                     return@doLast
                 }
 
                 server?.stop(0)
                 server = null
                 stopLatch.countDown()
-                LOGGER.info("Server stopped.")
+                LOGGER.lifecycle("Server stopped.")
             }
         }
     }
