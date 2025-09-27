@@ -47,7 +47,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           chmod +x ./gradlew
-          ./gradlew -Pversion=$(date +%Y.%m.%d.%H%M%S)-SNAPSHOT printVersion
+          ./gradlew --no-daemon -Pversion=$(date +%Y.%m.%d.%H%M%S)-SNAPSHOT printVersion
 
       # 6. Build & publish
       - name: Publish to OSSRH

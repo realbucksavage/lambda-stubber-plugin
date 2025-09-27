@@ -79,7 +79,7 @@ publishing {
             name = "OSSRH"
             url = uri(
                 if (version.toString().endsWith("SNAPSHOT"))
-                    https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/"
+                    "https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/"
                 else
                     "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
             )
