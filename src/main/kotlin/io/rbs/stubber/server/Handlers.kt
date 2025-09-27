@@ -1,6 +1,8 @@
 package io.rbs.stubber.server
 
 import com.sun.net.httpserver.HttpExchange
+import io.rbs.stubber.server.handlers.APIGatewayProxyResponseHandler
+import io.rbs.stubber.server.handlers.API_GATEWAY_PROXY_RESPONSE
 
 interface ResponseHandler {
     fun handleResponse(responseObject: Any, exchange: HttpExchange)
@@ -19,13 +21,9 @@ fun handleResponse(responseObject: Any, exchange: HttpExchange) {
 }
 
 inline fun <reified T> invokeGetter(getterName: String, instance: Any): T? {
-    val clazz = instance::class.java
-    val getterMethod = clazz.getDeclaredMethod(getterName)
+    val getterMethod = instance::class.java.methods.firstOrNull { it.name == getterName && it.parameterCount == 0 }
+        ?: return null
 
     val value = getterMethod.invoke(instance)
-    if (value == null || value !is T) {
-        return null
-    }
-
-    return value
+    return value as? T
 }

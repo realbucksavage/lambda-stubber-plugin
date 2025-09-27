@@ -1,26 +1,14 @@
 package io.rbs.stubber
 
-import com.sun.net.httpserver.HttpServer
-import io.rbs.stubber.server.createServer
+import io.rbs.stubber.server.startStubServer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.logging.Logger
-import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.SourceSetContainer
 import java.net.URLClassLoader
-import java.util.concurrent.CountDownLatch
 
 class LambdaStubberPlugin : Plugin<Project> {
-
     companion object {
-        private val LOGGER: Logger = Logging.getLogger(LambdaStubberPlugin::class.java)
-
-        private var server: HttpServer? = null
-        private val stopLatch = CountDownLatch(1)
-
         private const val TASK_GROUP = "development"
-
-        var implementorClassLoader: ClassLoader = LambdaStubberPlugin::class.java.classLoader
     }
 
     override fun apply(project: Project) {
@@ -28,57 +16,19 @@ class LambdaStubberPlugin : Plugin<Project> {
         val serverExtension = project.extensions.create("stubServer", ServerExtension::class.java)
 
         project.tasks.register("startStubServer") {
-            dependsOn("classes")
-            finalizedBy("stopStubServer")
-
             group = TASK_GROUP
-            description = "Starts the stub server."
+            description = "Starts the stub server (background). Depends on classes."
+
+            dependsOn("classes")
 
             doLast {
                 val sourceSets = project.extensions.getByType(SourceSetContainer::class.java)
-                val mainSourceSets = sourceSets.getByName("main")
-                val urls = (mainSourceSets.output + mainSourceSets.runtimeClasspath).map {
-                    it.toURI().toURL()
-                }.toTypedArray()
+                val main = sourceSets.getByName("main")
+                val urls = (main.output + main.runtimeClasspath).map { it.toURI().toURL() }.toTypedArray()
 
-                implementorClassLoader = URLClassLoader(urls, javaClass.classLoader)
+                val urlCl = URLClassLoader(urls, LambdaStubberPlugin::class.java.classLoader)
 
-                if (server != null) {
-                    LOGGER.warn("Server is already running...")
-                    return@doLast
-                }
-
-                server = createServer(serverExtension).apply {
-                    start()
-                    LOGGER.lifecycle("Server started on http://localhost:${serverExtension.port}")
-
-                    Runtime.getRuntime().addShutdownHook(object : Thread() {
-                        override fun run() {
-                            LOGGER.lifecycle("[Lifecycle] Closing the stub server.")
-                            server?.stop(0)
-                            stopLatch.countDown()
-                        }
-                    })
-
-                    stopLatch.await()
-                }
-            }
-        }
-
-        project.tasks.register("stopStubServer") {
-            group = TASK_GROUP
-            description = "Stops the stub server"
-
-            doLast {
-                if (server == null) {
-                    LOGGER.warn("Server is not running.")
-                    return@doLast
-                }
-
-                server?.stop(0)
-                server = null
-                stopLatch.countDown()
-                LOGGER.lifecycle("Server stopped.")
+                startStubServer(serverExtension, urlCl)
             }
         }
     }
