@@ -37,19 +37,18 @@ jobs:
       - name: Configure Gradle properties
         run: |
           mkdir -p ~/.gradle
-          echo "ossrhUsername=${{ secrets.OSSRH_USERNAME }}" >> ~/.gradle/gradle.properties
-          echo "ossrhPassword=${{ secrets.OSSRH_PASSWORD }}" >> ~/.gradle/gradle.properties
           echo "signing.gnupg.keyName=${{ secrets.GPG_KEY_ID }}" >> ~/.gradle/gradle.properties
           echo "signing.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }}" >> ~/.gradle/gradle.properties
+          echo ${{ secrets.GRADLE_PUBLISH_KEY }} >> ~/.gradle/gradle.properties
 
       # 5. Build & publish
-      - name: Publish to OSSRH
+      - name: Publish Gradle Plugin
         run: |
           chmod +x ./gradlew
-          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            # snapshot: generate timestamped version
-            ./gradlew clean publish -Pversion=$(date +%Y.%m.%d.%H%M%S)-SNAPSHOT --no-daemon --stacktrace
+          if [[ "${{ steps.version.outputs.is_release }}" == "true" ]]; then
+            echo "Publishing release version: ${{ steps.version.outputs.version }}"
+            ./gradlew clean publishPlugins -Pversion=${{ steps.version.outputs.version }} --no-daemon --stacktrace
           else
-            # release: version from gradle.properties or tag
-            ./gradlew clean publish --no-daemon --stacktrace
+            echo "Publishing snapshot version - $(date +%Y.%m.%d.%H%M%S)"
+            ./gradlew clean publishPlugins -Pversion=$(date +%Y.%m.%d.%H%M%S) --no-daemon --stacktrace
           fi

@@ -1,8 +1,7 @@
 plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
-    `maven-publish`
-    id("signing")
+    id("com.gradle.plugin-publish") version "1.2.1"
 }
 
 group = "io.github.realbucksavage"
@@ -39,53 +38,6 @@ gradlePlugin {
             description = "Runs a local stub server for AWS Lambda development and testing"
         }
     }
-}
-
-publishing {
-    publications {
-        withType<MavenPublication> {
-            pom {
-                name.set("Lambda Stubber Plugin")
-                description.set("A Gradle plugin to run local stub servers for AWS Lambda")
-                url.set("https://github.com/realbucksavage/lambda-stubber-plugin")
-
-                licenses {
-                    license {
-                        name.set("MIT License")
-                        url.set("https://opensource.org/licenses/MIT")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("realbucksavage")
-                        name.set("Jay")
-                        email.set("jgodarastpl@gmail.com")
-                    }
-                }
-                scm {
-                    connection.set("scm:git:git://github.com/realbucksavage/lambda-stubber-plugin.git")
-                    developerConnection.set("scm:git:ssh://github.com/realbucksavage/lambda-stubber-plugin.git")
-                    url.set("https://github.com/realbucksavage/lambda-stubber-plugin")
-                }
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            name = "CentralPortal"
-            url = uri("https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC")
-            credentials {
-                username = project.findProperty("ossrhUsername") as String? ?: ""
-                password = project.findProperty("ossrhPassword") as String? ?: ""
-            }
-        }
-    }
-}
-
-signing {
-    useGpgCmd()
-    sign(publishing.publications)
 }
 
 tasks.register("printVersion") {
