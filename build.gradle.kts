@@ -30,12 +30,16 @@ java {
 }
 
 gradlePlugin {
+    website = "https://github.com/realbucksavage/lambda-stubber-plugin"
+    vcsUrl = "https://github.com/realbucksavage/lambda-stubber-plugin"
+
     plugins {
         create("lambdaStubberPlugin") {
             id = "io.github.realbucksavage.lambda-stubber"
             implementationClass = "io.github.realbucksavage.stubber.LambdaStubberPlugin"
             displayName = "Lambda Stubber Plugin"
             description = "Runs a local stub server for AWS Lambda development and testing"
+            website = "https://github.com/realbucksavage/lambda-stubber-plugin"
         }
     }
 }
