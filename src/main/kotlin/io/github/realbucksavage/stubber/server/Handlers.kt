@@ -3,13 +3,16 @@ package io.github.realbucksavage.stubber.server
 import com.sun.net.httpserver.HttpExchange
 import io.github.realbucksavage.stubber.server.handlers.APIGatewayProxyResponseHandler
 import io.github.realbucksavage.stubber.server.handlers.API_GATEWAY_PROXY_RESPONSE
+import io.github.realbucksavage.stubber.server.handlers.APPLICATION_LOAD_BALANCER_RESPONSE
+import io.github.realbucksavage.stubber.server.handlers.ApplicationLoadBalancerResponseHandler
 
 interface ResponseHandler {
     fun handleResponse(responseObject: Any, exchange: HttpExchange)
 }
 
-private val mappedHandlers = mapOf<String, ResponseHandler>(
-    API_GATEWAY_PROXY_RESPONSE to APIGatewayProxyResponseHandler()
+private val mappedHandlers = mapOf(
+    API_GATEWAY_PROXY_RESPONSE to APIGatewayProxyResponseHandler(),
+    APPLICATION_LOAD_BALANCER_RESPONSE to ApplicationLoadBalancerResponseHandler()
 )
 
 fun handleResponse(responseObject: Any, exchange: HttpExchange) {

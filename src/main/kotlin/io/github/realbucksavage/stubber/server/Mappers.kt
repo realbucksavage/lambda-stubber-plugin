@@ -3,13 +3,16 @@ package io.github.realbucksavage.stubber.server
 import com.sun.net.httpserver.HttpExchange
 import io.github.realbucksavage.stubber.server.handlers.APIGatewayProxyRequestMapper
 import io.github.realbucksavage.stubber.server.handlers.API_GATEWAY_PROXY_REQUEST
+import io.github.realbucksavage.stubber.server.handlers.APPLICATION_LOAD_BALANCER_REQUEST
+import io.github.realbucksavage.stubber.server.handlers.ApplicationLoadBalancerRequestMapper
 
 interface RequestMapper {
     fun mapRequest(exchange: HttpExchange): Map<String, Any>
 }
 
-private val registeredMappers = mapOf<String, RequestMapper>(
+private val registeredMappers = mapOf(
     API_GATEWAY_PROXY_REQUEST to APIGatewayProxyRequestMapper(),
+    APPLICATION_LOAD_BALANCER_REQUEST to ApplicationLoadBalancerRequestMapper()
 )
 
 fun createRequestObject(clazz: Class<*>, exchange: HttpExchange): Any {

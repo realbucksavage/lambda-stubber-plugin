@@ -107,12 +107,16 @@ private fun createServer(extension: ServerExtension, classLoader: ClassLoader): 
 private fun handleExchange(exchange: HttpExchange, handlerInfo: HandlerInfo, extension: ServerExtension) {
     try {
         val mappedRequest = createRequestObject(handlerInfo.requestClass, exchange)
-        val responseObject = handlerInfo.handlerMethod.invoke(handlerInfo.handlerInstance, mappedRequest, null)
+        val responseObject = handlerInfo.handlerMethod.invoke(
+            handlerInfo.handlerInstance,
+            mappedRequest,
+            createReflectiveContext(handlerInfo.requestClass.name, handlerInfo.requestClass.classLoader)
+        )
         handleResponse(responseObject, exchange)
     } catch (ex: InvocationTargetException) {
         LOGGER.error("Error during handler method invocation: ${ex.targetException.message}", ex.targetException)
         sendErrorResponse(exchange, 500, ex.targetException, extension.showStacktrace)
-    } catch (ex: Exception) {
+    } catch (ex: Throwable) {
         LOGGER.error("Error during request handling: ${ex.message}", ex)
         sendErrorResponse(exchange, 500, ex, extension.showStacktrace)
     } finally {

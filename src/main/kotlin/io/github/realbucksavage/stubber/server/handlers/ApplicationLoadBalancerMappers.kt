@@ -5,18 +5,15 @@ import io.github.realbucksavage.stubber.server.RequestMapper
 import io.github.realbucksavage.stubber.server.ResponseHandler
 import io.github.realbucksavage.stubber.server.invokeGetter
 import java.nio.charset.StandardCharsets
-import java.util.TreeMap
+import java.util.*
 
-const val API_GATEWAY_PROXY_REQUEST = "com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent"
-const val API_GATEWAY_PROXY_RESPONSE = "com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent"
+const val APPLICATION_LOAD_BALANCER_REQUEST =
+    "com.amazonaws.services.lambda.runtime.events.ApplicationLoadBalancerRequestEvent"
+const val APPLICATION_LOAD_BALANCER_RESPONSE =
+    "com.amazonaws.services.lambda.runtime.events.ApplicationLoadBalancerResponseEvent"
 
-/**
- * APIGatewayProxyRequestMapper implements the RequestMapper interface to map an HttpExchange
- * to com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent.
- */
-class APIGatewayProxyRequestMapper : RequestMapper {
+class ApplicationLoadBalancerRequestMapper : RequestMapper {
     override fun mapRequest(exchange: HttpExchange): Map<String, Any> {
-        // Map headers: single value per key (first)
         val requestHeaders = exchange.requestHeaders.mapValues { it.value.firstOrNull().orEmpty() }
             .toMap(TreeMap(String.CASE_INSENSITIVE_ORDER))
 
@@ -38,23 +35,18 @@ class APIGatewayProxyRequestMapper : RequestMapper {
         // Map path
         val path = exchange.requestURI.path
 
-        // Return a map of setter names to values (matches APIGatewayProxyRequestEvent setters)
         return mapOf(
-            "setHeaders" to requestHeaders,
-            "setBody" to body,
-            "setPath" to path,
             "setHttpMethod" to httpMethod,
+            "setPath" to path,
+            "setHeaders" to requestHeaders,
             "setQueryStringParameters" to queryParams,
+            "setBody" to body,
         )
     }
 }
 
-/**
- * APIGatewayProxyResponseHandler maps a Lambda APIGatewayProxyResponseEvent to HttpExchange.
- */
-class APIGatewayProxyResponseHandler : ResponseHandler {
+class ApplicationLoadBalancerResponseHandler : ResponseHandler {
     override fun handleResponse(responseObject: Any, exchange: HttpExchange) {
-        // Set headers from the response object
         invokeGetter<Map<String, String>>("getHeaders", responseObject)?.forEach { (key, value) ->
             exchange.responseHeaders[key] = value
         }
