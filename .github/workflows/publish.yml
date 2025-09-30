@@ -39,7 +39,7 @@ jobs:
           mkdir -p ~/.gradle
           echo "signing.gnupg.keyName=${{ secrets.GPG_KEY_ID }}" >> ~/.gradle/gradle.properties
           echo "signing.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }}" >> ~/.gradle/gradle.properties
-          echo ${{ secrets.GRADLE_PUBLISH_KEY }} >> ~/.gradle/gradle.properties
+          echo '${{ secrets.GRADLE_PUBLISH_KEY }}' >> ~/.gradle/gradle.properties
 
       # 5. Build & publish
       - name: Publish Gradle Plugin
