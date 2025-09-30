@@ -73,7 +73,7 @@ publishing {
 
     repositories {
         maven {
-            name = "OSSRH"
+            name = "CentralPortal"
             url = uri("https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC")
             credentials {
                 username = project.findProperty("ossrhUsername") as String? ?: ""
