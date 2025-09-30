@@ -42,15 +42,14 @@ jobs:
           echo "signing.gnupg.keyName=${{ secrets.GPG_KEY_ID }}" >> ~/.gradle/gradle.properties
           echo "signing.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }}" >> ~/.gradle/gradle.properties
 
-      # 5. Set version for snapshot builds
-      - name: Configure Snapshot Version
-        if: github.ref == 'refs/heads/main'
-        run: |
-          chmod +x ./gradlew
-          ./gradlew --no-daemon -Pversion=$(date +%Y.%m.%d.%H%M%S)-SNAPSHOT printVersion
-
-      # 6. Build & publish
+      # 5. Build & publish
       - name: Publish to OSSRH
         run: |
           chmod +x ./gradlew
-          ./gradlew clean publish --no-daemon --stacktrace
+          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            # snapshot: generate timestamped version
+            ./gradlew clean publish -Pversion=$(date +%Y.%m.%d.%H%M%S)-SNAPSHOT --no-daemon --stacktrace
+          else
+            # release: version from gradle.properties or tag
+            ./gradlew clean publish --no-daemon --stacktrace
+          fi
