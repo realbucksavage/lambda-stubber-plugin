@@ -39,7 +39,7 @@ gradlePlugin {
             implementationClass = "io.github.realbucksavage.stubber.LambdaStubberPlugin"
             displayName = "Lambda Stubber Plugin"
             description = "Runs a local stub server for AWS Lambda development and testing"
-            website = "https://github.com/realbucksavage/lambda-stubber-plugin"
+            tags.set(listOf("aws", "lambda", "testing", "stub", "local-development"))
         }
     }
 }
