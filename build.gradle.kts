@@ -43,15 +43,12 @@ gradlePlugin {
 
 publishing {
     publications {
-        create<MavenPublication>("pluginMaven") {
-            artifact(tasks["jar"])
-            artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
-
+        withType<MavenPublication> {
             pom {
                 name.set("Lambda Stubber Plugin")
                 description.set("A Gradle plugin to run local stub servers for AWS Lambda")
                 url.set("https://github.com/realbucksavage/lambda-stubber-plugin")
+
                 licenses {
                     license {
                         name.set("MIT License")
@@ -93,7 +90,7 @@ publishing {
 
 signing {
     useGpgCmd()
-    sign(publishing.publications["pluginMaven"])
+    sign(publishing.publications)
 }
 
 tasks.register("printVersion") {
