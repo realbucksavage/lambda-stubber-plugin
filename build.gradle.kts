@@ -76,9 +76,9 @@ publishing {
             name = "OSSRH"
             url = uri(
                 if (version.toString().endsWith("SNAPSHOT"))
-                    "https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/"
+                    "https://s01.oss.sonatype.org/content/repositories/snapshots/"
                 else
-                    "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
+                    "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
             )
             credentials {
                 username = project.findProperty("ossrhUsername") as String? ?: ""
