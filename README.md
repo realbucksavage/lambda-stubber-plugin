@@ -9,16 +9,16 @@ Add the plugin to your project's `build.gradle.kts`:
 
 ```kotlin
 plugins {
-    id("io.rbs.lambda-stubber") version "1.0.0"
+    id("io.github.realbucksavage.lambda-stubber") version "0.1.0"
 }
 ```
 
 ## Configuration
 
-The stub server can be configured in the `build.gradle.kts` using the `stubber` extension:
+The stub server can be configured in the `build.gradle.kts` using the `stubServer` extension:
 
 ```kotlin
-stubber {
+stubServer {
     host = "127.0.0.1"      // default value
     port = 9795             // default value
     showStacktrace = true   // default value
